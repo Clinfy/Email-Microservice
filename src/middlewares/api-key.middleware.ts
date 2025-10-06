@@ -46,22 +46,7 @@ export class ApiKeyGuard implements CanActivate {
             return true;
 
         } catch (error) {
-            if (error instanceof UnauthorizedException || error instanceof ForbiddenException) {
-                throw error;
-            }
-
-            if (error.isAxiosError && error.response) {
-                const status = error.response.status;
-                const message = error.response.data?.message || error.message;
-
-                if (status === 401) {
-                    throw new UnauthorizedException(message);
-                } else if (status === 403) {
-                    throw new ForbiddenException(message);
-                }
-            }
-
-            throw new UnauthorizedException('An unexpected error occurred');
+            throw new Error(error);
         }
     }
 }
