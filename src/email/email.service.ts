@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {createTransport} from "nodemailer";
 import {ConfigService} from "@nestjs/config";
-import {SendEmailDTO} from "../DTO/email.dto";
+import {SendEmailDTO} from "../interfaces/DTO/email.dto";
 
 @Injectable()
 export class EmailService {
