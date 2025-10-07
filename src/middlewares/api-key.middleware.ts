@@ -1,4 +1,4 @@
-import {CanActivate, ExecutionContext, ForbiddenException, Injectable} from '@nestjs/common';
+import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import {Permissions} from "src/middlewares/decorators/permissions.decorator";
 import axios, {isAxiosError} from "axios";
