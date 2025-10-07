@@ -1,14 +1,9 @@
-import {
-    CanActivate,
-    ExecutionContext,
-    ForbiddenException,
-    Injectable,
-    UnauthorizedException,
-} from '@nestjs/common';
-import { Request } from 'express';
+import {CanActivate, ExecutionContext, ForbiddenException, Injectable} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import {Permissions} from "src/middlewares/decorators/permissions.decorator";
-import axios from "axios";
+import axios, {isAxiosError} from "axios";
+import {extractApiKey} from "../common/tools/extract-api-key";
+import {propagateAxiosError} from "../common/tools/propagate-axios-error";
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
@@ -22,11 +17,12 @@ export class ApiKeyGuard implements CanActivate {
             const rawApiKey = extractApiKey(request);
 
             const requiredPermissions = this.reflector.get<string[]>(Permissions, context.getHandler());
+            if (requiredPermissions.length === 0) return true;
 
-            const baseUrl = process.env.AUTH_BASE_URL;
+            const baseUrl = process.env.AUTH_SERVICE_URL;
 
             const requestAuth = requiredPermissions.map((permission: string) =>
-                axios.get(`${baseUrl}/permissions/${permission}`, {
+                axios.get(`${baseUrl}/api-keys/can-do/${permission}`, {
                     headers: {
                         'x-api-key': rawApiKey,
                         'Content-Type': 'application/json',
@@ -40,27 +36,16 @@ export class ApiKeyGuard implements CanActivate {
                 (result) => result.status === 'fulfilled' && result.value.data,
             );
 
-            if (!atLeastOneAllowed) {
-                throw new ForbiddenException('You do not have permission to access this resource');
-            }
-            return true;
+            if (atLeastOneAllowed) return true;
+
+            const rejected = result.filter((r): r is PromiseRejectedResult => r.status === 'rejected');
+            const axiosReject = rejected.find(r => isAxiosError(r.reason));
+            if (axiosReject) propagateAxiosError(axiosReject.reason);
+
+            return false;
 
         } catch (error) {
-            throw new Error(error);
+            throw error;
         }
     }
-}
-
-export function extractApiKey(request: Request): string {
-    const headerValue = request.headers['x-api-key'];
-
-    if (Array.isArray(headerValue)) {
-        throw new UnauthorizedException('API key header must be a single value');
-    }
-
-    if (typeof headerValue !== 'string' || headerValue.trim().length === 0) {
-        throw new UnauthorizedException('API key header missing');
-    }
-
-    return headerValue.trim();
 }
