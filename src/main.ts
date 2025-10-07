@@ -8,7 +8,7 @@ async function bootstrap() {
 
     //Swagger
     const config = new DocumentBuilder()
-        .setTitle('Clinify Users Microservice')
+        .setTitle('Clinfy Email Sender Microservice')
         .setDescription('Docs')
         .setVersion('1.0')
         .addBearerAuth()
