@@ -1,13 +1,14 @@
-import {Injectable} from '@nestjs/common';
-import {createTransport} from "nodemailer";
-import {ConfigService} from "@nestjs/config";
-import {SendEmailDTO} from "../DTO/email.dto";
+/* eslint-disable prettier/prettier */
+import { Injectable } from '@nestjs/common';
+import { createTransport } from "nodemailer";
+import { ConfigService } from "@nestjs/config";
+import { SendEmailDTO } from "../DTO/email.dto";
 
 @Injectable()
 export class EmailService {
-    constructor(private readonly configService: ConfigService) {}
+    constructor(private readonly configService: ConfigService) { }
 
-    async sendEmail(dto: SendEmailDTO): Promise<{message: string}> {
+    async sendEmail(dto: SendEmailDTO): Promise<{ message: string }> {
         const transport = this.emailTransport();
         try {
             await transport.sendMail({
@@ -17,13 +18,13 @@ export class EmailService {
                 html: dto.html,
                 text: dto.text,
             })
-            return {message: 'Email sent successfully'};
-        }catch (e) {
-            throw new Error(e);
+            return { message: 'Email sent successfully' };
+        } catch (e) {
+            throw new Error(e instanceof Error ? e.message : String(e));
         }
     }
 
-    private emailTransport(){
+    private emailTransport() {
         return createTransport({
             host: this.configService.get<string>('EMAIL_HOST'),
             port: this.configService.get<number>('EMAIL_PORT'),
