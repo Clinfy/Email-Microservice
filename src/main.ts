@@ -8,6 +8,10 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  //Trust Proxy
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.set('trust proxy', 1);
+
   //Swagger
   const config = new DocumentBuilder()
     .setTitle('Clinfy Email Sender Microservice')
@@ -31,8 +35,8 @@ async function bootstrap() {
       queue: 'email_queue',
       wildcards: true,
       queueOptions: { durable: true },
-      noAck: false
-    }
+      noAck: false,
+    },
   });
 
   await app.startAllMicroservices();

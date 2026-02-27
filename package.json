@@ -1,6 +1,6 @@
 {
   "name": "email-microservice",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "author": "",
   "private": true,
@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "npm run start:prod",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -34,6 +34,7 @@
     "amqp-connection-manager": "^5.0.0",
     "amqplib": "^0.10.9",
     "axios": "^1.12.2",
+    "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "nodemailer": "^7.0.7",
     "reflect-metadata": "^0.2.2",
@@ -81,5 +82,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "overrides": {
+    "ajv": "^8.17.1",
+    "fast-xml-parser": "^5.3.8"
   }
 }
