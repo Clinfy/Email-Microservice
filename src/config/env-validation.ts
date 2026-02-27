@@ -1,0 +1,48 @@
+import { IsNotEmpty, IsNumber, IsString, validateSync } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+
+class EnvironmentVariables {
+  @IsString()
+  @IsNotEmpty()
+  RABBITMQ_URL: string;
+
+  @IsString()
+  @IsNotEmpty()
+  EMAIL_HOST: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  EMAIL_PORT: number;
+
+  @IsString()
+  @IsNotEmpty()
+  EMAIL_USER: string;
+
+  @IsString()
+  @IsNotEmpty()
+  EMAIL_PASS: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  PORT: number;
+
+  @IsString()
+  @IsNotEmpty()
+  AUTH_SERVICE_URL: string;
+}
+
+export function validate(config: Record<string, unknown>) {
+  const validatedConfig = plainToInstance(EnvironmentVariables, config, {
+    enableImplicitConversion: true,
+  });
+
+  const errors = validateSync(validatedConfig, {
+    skipMissingProperties: false,
+  });
+
+  if (errors.length > 0) {
+    throw new Error(errors.toString());
+  }
+
+  return validatedConfig;
+}
