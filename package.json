@@ -81,5 +81,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "overrides": {
+    "ajv": "^8.17.1",
+    "fast-xml-parser": "^5.3.8"
   }
 }
