@@ -8,6 +8,7 @@ import { WinstonModule } from 'nest-winston';
 import winston from 'winston';
 import 'winston-daily-rotate-file';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { AuthClientModule } from './clients/auth/auth-client.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
     }),
 
     EmailModule,
+    AuthClientModule
   ],
 
   controllers: [AppController],
