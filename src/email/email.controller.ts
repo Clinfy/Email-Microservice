@@ -1,8 +1,8 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { EmailService } from './email.service';
 import { SendEmailDTO } from '../DTO/email.dto';
-import { ApiKeyGuard } from '../middlewares/api-key.middleware';
-import { Permissions } from '../middlewares/decorators/permissions.decorator';
+import { ApiKeyGuard } from '../common/guards/api-key.guard';
+import { EndpointKey } from '../common/decorators/endpoint-key.decorator';
 import {
   ApiBasicAuth,
   ApiBody,
@@ -16,7 +16,7 @@ export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
   @UseGuards(ApiKeyGuard)
-  @Permissions(['EMAIL_SEND'])
+  @EndpointKey('email.send')
   @ApiBasicAuth()
   @ApiOperation({ summary: "Send's an email using nodemailer" })
   @ApiBody({ type: SendEmailDTO })
