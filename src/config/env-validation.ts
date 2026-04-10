@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString, validateSync } from 'class-validator';
+import {
+  IsBooleanString,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  validateSync,
+} from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 
 class EnvironmentVariables {
@@ -13,6 +19,10 @@ class EnvironmentVariables {
   @IsNumber()
   @IsNotEmpty()
   EMAIL_PORT: number;
+
+  @IsBooleanString()
+  @IsNotEmpty()
+  EMAIL_SECURE: string;
 
   @IsString()
   @IsNotEmpty()
