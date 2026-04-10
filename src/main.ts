@@ -6,15 +6,8 @@ import { ConfigService } from '@nestjs/config';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { useContainer } from 'class-validator';
-import {
-  BadRequestException,
-  HttpStatus,
-  ValidationPipe,
-} from '@nestjs/common';
-import {
-  findFirstErrorCode,
-  findFirstMessage,
-} from './common/utils/find-errors-data.util';
+import { BadRequestException, HttpStatus, ValidationPipe } from '@nestjs/common';
+import { findFirstErrorCode, findFirstMessage } from './common/utils/find-errors-data.util';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

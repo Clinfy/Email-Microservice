@@ -41,7 +41,7 @@ import { AuthClientModule } from './clients/auth/auth-client.module';
     }),
 
     EmailModule,
-    AuthClientModule
+    AuthClientModule,
   ],
 
   controllers: [AppController],

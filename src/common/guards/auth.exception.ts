@@ -9,12 +9,7 @@ export enum AuthErrorCodes {
 }
 
 export class AuthException extends BaseServiceException {
-  constructor(
-    message: string,
-    errorCode: AuthErrorCodes,
-    status: HttpStatus,
-    cause?: Error,
-  ) {
+  constructor(message: string, errorCode: AuthErrorCodes, status: HttpStatus, cause?: Error) {
     super(message, errorCode, status, cause);
   }
 }

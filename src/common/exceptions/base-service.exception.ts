@@ -7,12 +7,7 @@ export interface ServiceExceptionResponse {
 }
 
 export abstract class BaseServiceException extends HttpException {
-  protected constructor(
-    message: string,
-    errorCode: string,
-    status: HttpStatus,
-    cause?: Error,
-  ) {
+  protected constructor(message: string, errorCode: string, status: HttpStatus, cause?: Error) {
     const response: ServiceExceptionResponse = {
       message,
       errorCode,

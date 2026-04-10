@@ -8,30 +8,18 @@ import { propagateAxiosError } from 'src/common/utils/propagate-axios-error';
 @Injectable()
 export class AuthClientService {
   constructor(private readonly configService: ConfigService) {}
-  async getEndpointPermissions(
-    key: string,
-    request: Request,
-  ): Promise<string[]> {
+  async getEndpointPermissions(key: string, request: Request): Promise<string[]> {
     const authApi = await this.axiosAuthApi(request);
-    const response = await authApi.get<string[]>(
-      `/endpoint-permission-rules/get-endpoint-permissions/${key}`,
-    );
+    const response = await authApi.get<string[]>(`/endpoint-permission-rules/get-endpoint-permissions/${key}`);
 
     return response.data;
   }
 
-  async apiKeyCanDo(
-    permission: string,
-    apiKey: string,
-    request: Request,
-  ): Promise<boolean> {
+  async apiKeyCanDo(permission: string, apiKey: string, request: Request): Promise<boolean> {
     const authApi = await this.axiosAuthApi(request);
-    const response = await authApi.get<boolean>(
-      `/api-keys/can-do/${permission}`,
-      {
-        headers: { 'x-api-key': apiKey },
-      },
-    );
+    const response = await authApi.get<boolean>(`/api-keys/can-do/${permission}`, {
+      headers: { 'x-api-key': apiKey },
+    });
 
     return response.data;
   }

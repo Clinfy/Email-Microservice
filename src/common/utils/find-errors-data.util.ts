@@ -1,8 +1,6 @@
 import { ValidationError } from '@nestjs/common';
 
-export function findFirstErrorCode(
-  errors: ValidationError[],
-): string | undefined {
+export function findFirstErrorCode(errors: ValidationError[]): string | undefined {
   const stack: ValidationError[] = [...errors];
 
   while (stack.length) {

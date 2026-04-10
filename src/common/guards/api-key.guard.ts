@@ -1,15 +1,7 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { extractApiKey } from 'src/common/utils/extract-api-key.util';
-import {
-  AuthErrorCodes,
-  AuthException,
-} from 'src/common/guards/auth.exception';
+import { AuthErrorCodes, AuthException } from 'src/common/guards/auth.exception';
 import { EndpointKey } from 'src/common/decorators/endpoint-key.decorator';
 import { Request } from 'express';
 import { AuthClientService } from 'src/clients/auth/auth-client.service';
@@ -25,21 +17,13 @@ export class ApiKeyGuard implements CanActivate {
     const request: Request = context.switchToHttp().getRequest();
     const rawApiKey = extractApiKey(request);
 
-    const endpointKey = this.reflector.getAllAndOverride<string>(EndpointKey, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-    const requiredPermissions = await this.authClient.getEndpointPermissions(
-      endpointKey,
-      request,
-    );
+    const endpointKey = this.reflector.getAllAndOverride<string>(EndpointKey, [context.getHandler(), context.getClass()]);
+    const requiredPermissions = await this.authClient.getEndpointPermissions(endpointKey, request);
 
     if (!requiredPermissions || requiredPermissions.length === 0) return true;
 
     const apiCanDo = await Promise.all(
-      requiredPermissions.map((permission: string) =>
-        this.authClient.apiKeyCanDo(permission, rawApiKey, request),
-      ),
+      requiredPermissions.map((permission: string) => this.authClient.apiKeyCanDo(permission, rawApiKey, request)),
     );
 
     if (!apiCanDo.some(Boolean)) {

@@ -1,12 +1,4 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
@@ -27,10 +19,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
     // Extract error code from top-level exception
     let errorCode = 'INTERNAL_ERROR';
@@ -54,15 +43,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
     // Get user-facing message from deepest HttpException
     let userMessage = 'An unexpected error occurred';
     if (exception instanceof Error) {
-      userMessage =
-        BaseServiceException.getDeepestHttpExceptionMessage(exception);
+      userMessage = BaseServiceException.getDeepestHttpExceptionMessage(exception);
     }
 
     // Build cause chain for logging
-    const causeChain =
-      exception instanceof Error
-        ? BaseServiceException.getCauseChain(exception)
-        : [];
+    const causeChain = exception instanceof Error ? BaseServiceException.getCauseChain(exception) : [];
 
     // Enhanced Winston logging with all metadata
     this.logger.error('Unhandled exception', {

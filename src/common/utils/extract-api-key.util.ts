@@ -1,9 +1,6 @@
 import { Request } from 'express';
 import { HttpStatus } from '@nestjs/common';
-import {
-  AuthErrorCodes,
-  AuthException,
-} from 'src/common/guards/auth.exception';
+import { AuthErrorCodes, AuthException } from 'src/common/guards/auth.exception';
 
 export function extractApiKey(request: Request): string {
   const headerValue = request.headers['x-api-key'];
@@ -17,11 +14,7 @@ export function extractApiKey(request: Request): string {
   }
 
   if (typeof headerValue !== 'string' || headerValue.trim().length === 0) {
-    throw new AuthException(
-      'API key header missing',
-      AuthErrorCodes.API_KEY_HEADER_MISSING,
-      HttpStatus.UNAUTHORIZED,
-    );
+    throw new AuthException('API key header missing', AuthErrorCodes.API_KEY_HEADER_MISSING, HttpStatus.UNAUTHORIZED);
   }
 
   return headerValue.trim();

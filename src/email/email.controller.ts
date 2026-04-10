@@ -3,12 +3,7 @@ import { EmailService } from './email.service';
 import { SendEmailDTO } from '../DTO/email.dto';
 import { ApiKeyGuard } from '../common/guards/api-key.guard';
 import { EndpointKey } from '../common/decorators/endpoint-key.decorator';
-import {
-  ApiBasicAuth,
-  ApiBody,
-  ApiCreatedResponse,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiBasicAuth, ApiBody, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 
 @Controller('email')
@@ -37,7 +32,6 @@ export class EmailController {
       channel.ack(originalMsg);
       return msg;
     } catch (error) {
-
       console.error('Error processing email queue message:', error);
     }
   }
