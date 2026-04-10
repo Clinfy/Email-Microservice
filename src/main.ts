@@ -4,6 +4,17 @@ import { writeFileSync } from 'node:fs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { useContainer } from 'class-validator';
+import {
+  BadRequestException,
+  HttpStatus,
+  ValidationPipe,
+} from '@nestjs/common';
+import {
+  findFirstErrorCode,
+  findFirstMessage,
+} from './common/utils/find-errors-data.util';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,6 +34,31 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   writeFileSync('./openapi.json', JSON.stringify(document, null, 2));
   SwaggerModule.setup('docs', app, document);
+
+  //Error Handler
+  const exceptionFilter = app.get(AllExceptionsFilter);
+  app.useGlobalFilters(exceptionFilter);
+
+  //Logs
+  useContainer(app.select(AppModule), { fallbackOnErrors: true }); // <—
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+      validationError: { target: false, value: true },
+      exceptionFactory: (errors) => {
+        const errorCode = findFirstErrorCode(errors) ?? 'VALIDATION_ERROR';
+        const message = findFirstMessage(errors);
+        return new BadRequestException({
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode,
+          message,
+        });
+      },
+    }),
+  );
 
   //RabbitMQ
   const configService = app.get(ConfigService);
